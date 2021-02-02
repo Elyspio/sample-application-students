@@ -3,8 +3,12 @@ FROM maven:3.6.3-jdk-11 AS build
 ENV MYAPP_HOME /opt/backend
 WORKDIR $MYAPP_HOME
 COPY pom.xml .
+RUN mvn dependency:go-offline
+
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn package 
+
+
 
 # Run
 FROM openjdk:11-jre
