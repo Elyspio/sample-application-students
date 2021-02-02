@@ -1,19 +1,40 @@
 git:
   depth: 5
+
+branches:
+  only:
+    - develop
+
 jobs:
   include:
-    - stage: "Build and Test Java"
+    - stage: "Test"
       language: java
+      name: "Test Java"
       jdk: oraclejdk11
       beforeScript:
       - cd sample-application-backend
-    - stage: "Build and Test Nodejs"
+    
+    - stage: "Test"
+      name: "Test Node.JS"
       language: node.js
       node_js: "12.20"
       beforeScript:
       - cd sample-application-frontend
+  
+    - state: "Deploy"
+      name: "Build and deploy images to Docker hub "
+      script:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker-compose build
+      - docker-compose push
+
+
+
+
 cache:
   directories:
     - "$HOME/.m2/repository"
     - "$HOME/.npm"
 
+services:
+  - docker
