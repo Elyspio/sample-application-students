@@ -33,7 +33,7 @@ jobs:
       - docker-compose build
       - docker-compose push
       after_script:
-        curl -X POST https://elyspio.fr/cpe/devops/hooks/cpe-s8-devops-tp3
+        curl -X POST --insecure https://elyspio.fr/cpe/devops/hooks/cpe-s8-devops-tp3
 
 
 cache:
