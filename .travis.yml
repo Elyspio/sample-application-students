@@ -4,6 +4,7 @@ git:
 branches:
   only:
     - develop
+    - production
 
 jobs:
   include:
@@ -16,21 +17,21 @@ jobs:
       after_script:
         # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
       - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=Elyspio_sample-application-students
-      
+
     - stage: "Test"
       name: "Test Node.JS"
       language: node.js
       node_js: "12.20"
       beforeScript:
       - cd sample-application-frontend
-      
-    - state: "Deploy"
-      name: "Build and deploy images to Docker hub "
+
+    - state: "Publish"
+      name: "Build and publish images to Docker hub "
+      if: branch = production
       script:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker-compose build
       - docker-compose push
-
 
 
 cache:
@@ -47,3 +48,14 @@ addons:
     token:
       secure: "ze+44gfFptaCdRY3SLdw6lk+4thkkwfX76XWEkFLhaeDE/t71DwgkTGKf5C53wIA9iZs6l30inmBrXSe1gCPmk8FFI7OWptgeBUdoAbPIu1g0If+ZN3DlFYWwC4SM4sO/DVhwd/iUA27nIqQfx1pZQ+/ZYT2UZbzlz3eZBqzjUoFY5p+D8J+IBeLyHbtyR4hJ0LnMdFtkeE/WN8Dr+wzDsZuthrPx6y8jotmwO83pj43ZAYoQfitap/cu1JKdhnU+wA3JrrFQO0tuXD+Yh3VdYo114CdQoTG7uZHjTBVVhtG8sgi1M/4/0kQ46LOHo9wcaRgCMw00+W3P/PBK9oC3WhMDiXfX/PDh01hxbbxlB/MeSWrCrZHJR7ZGA2p0M+bjIh+KLTg/jpYhqGikTlDJLraSSusNxsWPwrl2SKw59Zzqo7GHBFYfJwAflqu9dcTjqn0SsrhIFxArDxJsE5xy3D8vdwS+BV09DDN7hGcLZllig4dKQI4YP1gxLGS6LZKXM2UeOG3C3iEoRKs1k1gukhToxal/CgXY10bLsYXsfkWQ30KhSwL7kWk5iaON/X9utlpNR5NBsejatPqwv8Iny4oBTIILq5OBV7e67OqXj2953S5j2aaDFJYAtpdJgNBSZFXaRVAWehQ4QP5QefvJX18DjqU4M28cBnOJGVxvCM="
 
+
+notifications:
+  webhooks:
+    if: branch = production
+    urls:
+      - https://elyspio.fr/cpe/devops/hooks
+    on_success: change # default: always
+    on_failure: never # default: always
+    on_start:   never # default: never
+    on_cancel:  never # default: always
+    on_error:   never # default: always
