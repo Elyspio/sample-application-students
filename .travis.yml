@@ -53,7 +53,7 @@ notifications:
   webhooks:
     urls:
       - https://elyspio.fr/cpe/devops/hooks
-    on_success: change # default: always
+    on_success: always # default: always
     on_failure: never # default: always
     on_start:   never # default: never
     on_cancel:  never # default: always
