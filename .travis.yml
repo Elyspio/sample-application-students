@@ -51,7 +51,6 @@ addons:
 
 notifications:
   webhooks:
-    if: branch = production
     urls:
       - https://elyspio.fr/cpe/devops/hooks
     on_success: change # default: always
